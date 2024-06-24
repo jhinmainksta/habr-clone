@@ -70,7 +70,6 @@ func (h *HabrClonePG) Users() ([]*model.User, error) {
 }
 
 func (h *HabrClonePG) CreatePost(NewPost model.NewPost) (*model.Post, error) {
-	err := h.db.Table(postsTable).Create(NewPost).Error
 
 	post := &model.Post{
 		Title:   NewPost.Title,
@@ -79,10 +78,12 @@ func (h *HabrClonePG) CreatePost(NewPost model.NewPost) (*model.Post, error) {
 		Blocked: NewPost.Blocked,
 	}
 
-	if post.Blocked == nil {
-		fls := false
-		post.Blocked = &fls
+	if NewPost.Blocked == nil {
+		NewPost.Blocked = new(bool)
+		post.Blocked = new(bool)
 	}
+
+	err := h.db.Table(postsTable).Create(NewPost).Error
 
 	return post, err
 }
