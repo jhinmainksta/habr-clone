@@ -3,22 +3,41 @@
 package model
 
 type Comment struct {
-	ID      string `json:"id"`
-	Content string `json:"content"`
-	Postid  int    `json:"postid"`
-	Userid  int    `json:"userid"`
-	Parent  *int   `json:"parent,omitempty"`
+	ID       string `json:"id"`
+	Content  string `json:"content"`
+	PostID   int    `json:"postID"`
+	UserID   int    `json:"userID"`
+	ParentID *int   `json:"parentID,omitempty"`
 }
 
 type Mutation struct {
+}
+
+type NewComment struct {
+	Content  string `json:"content"`
+	PostID   int    `json:"postID"`
+	UserID   int    `json:"userID"`
+	ParentID *int   `json:"parentID,omitempty"`
+}
+
+type NewPost struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	UserID  int    `json:"userID"`
+	Blocked *bool  `json:"blocked,omitempty"`
+}
+
+type NewUser struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 type Post struct {
 	ID      string `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
-	Userid  int    `json:"userid"`
-	Blocked bool   `json:"blocked"`
+	UserID  int    `json:"userID"`
+	Blocked *bool  `json:"blocked,omitempty"`
 }
 
 type Query struct {

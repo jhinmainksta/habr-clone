@@ -8,23 +8,44 @@ type User {
   password: String!
 }
 
+input NewUser{
+  username: String!
+  password: String!
+}
+
 type Post {
   id: ID!
   title: String!
   content: String!
-  userid: Int!
-  blocked: Boolean!
+  userID: Int!
+  blocked: Boolean
+}
+
+input NewPost {
+  title: String!
+  content: String!
+  userID: Int!
+  blocked: Boolean
 }
 
 type Comment {
   id: ID!
   content: String!
-  postid: Int!
-  userid: Int!
-  parent: Int
+  postID: Int!
+  userID: Int!
+  parentID: Int
+}
+
+input NewComment {
+  content: String!
+  postID: Int!
+  userID: Int!
+  parentID: Int
 }
 
 type Query {
+  user(id: ID!): User
+  users: [User!]!
   posts: [Post!]!
   post(id: ID!): Post
   comments: [Comment!]!
@@ -32,9 +53,9 @@ type Query {
 }
 
 type Mutation {
-  createUser(username: String!, password: String!): User!
-  createPost(title: String!, content: String!): Post!
-  createComment(postId: ID!, content: String!, parentId: ID): Comment!
+  createUser(input: NewUser!): User!
+  createPost(input: NewPost!): Post!
+  createComment(input: NewComment!): Comment!
   blockComments(postId: ID!): Post!
 }
 

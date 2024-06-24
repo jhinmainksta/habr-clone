@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 
+	"github.com/jhinmainksta/habr-clone/graph/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -40,4 +41,91 @@ type HabrClonePG struct {
 
 func NewHabrClonePG(db *gorm.DB) *HabrClonePG {
 	return &HabrClonePG{db: db}
+}
+
+func (h *HabrClonePG) CreateUser(NewUser model.NewUser) (*model.User, error) {
+	err := h.db.Table(usersTable).Create(NewUser).Error
+
+	user := &model.User{
+		Username: NewUser.Username,
+		Password: NewUser.Password,
+	}
+
+	return user, err
+}
+
+func (h *HabrClonePG) User(id string) (*model.User, error) {
+	user := &model.User{}
+	err := h.db.First(user, id).Error
+
+	return user, err
+}
+
+func (h *HabrClonePG) Users() ([]*model.User, error) {
+	var users []*model.User
+
+	err := h.db.Find(&users).Error
+
+	return users, err
+}
+
+func (h *HabrClonePG) CreatePost(NewPost model.NewPost) (*model.Post, error) {
+	err := h.db.Table(postsTable).Create(NewPost).Error
+
+	post := &model.Post{
+		Title:   NewPost.Title,
+		Content: NewPost.Content,
+		UserID:  NewPost.UserID,
+		Blocked: NewPost.Blocked,
+	}
+
+	if post.Blocked == nil {
+		fls := false
+		post.Blocked = &fls
+	}
+
+	return post, err
+}
+
+func (h *HabrClonePG) Post(id string) (*model.Post, error) {
+	post := &model.Post{}
+	err := h.db.First(post, id).Error
+
+	return post, err
+}
+
+func (h *HabrClonePG) Posts() ([]*model.Post, error) {
+	var posts []*model.Post
+
+	err := h.db.Find(&posts).Error
+
+	return posts, err
+}
+
+func (h *HabrClonePG) CreateComment(NewComment model.NewComment) (*model.Comment, error) {
+	err := h.db.Table(commentsTable).Create(NewComment).Error
+
+	comment := &model.Comment{
+		Content:  NewComment.Content,
+		PostID:   NewComment.PostID,
+		UserID:   NewComment.UserID,
+		ParentID: NewComment.ParentID,
+	}
+
+	return comment, err
+}
+
+func (h *HabrClonePG) Comment(id string) (*model.Comment, error) {
+	Comment := &model.Comment{}
+	err := h.db.First(Comment, id).Error
+
+	return Comment, err
+}
+
+func (h *HabrClonePG) Comments() ([]*model.Comment, error) {
+	var Comments []*model.Comment
+
+	err := h.db.Find(&Comments).Error
+
+	return Comments, err
 }
