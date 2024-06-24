@@ -11,6 +11,11 @@ import (
 	"github.com/jhinmainksta/habr-clone/graph/model"
 )
 
+// Comments is the resolver for the comments field.
+func (r *commentResolver) Comments(ctx context.Context, obj *model.Comment, limit *int, offset *int) ([]*model.Comment, error) {
+	panic(fmt.Errorf("not implemented: Comments - comments"))
+}
+
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	return r.repo.HabrClone.CreateUser(input)
@@ -31,6 +36,11 @@ func (r *mutationResolver) BlockComments(ctx context.Context, postID string) (*m
 	panic(fmt.Errorf("not implemented: BlockComments - blockComments"))
 }
 
+// Comments is the resolver for the comments field.
+func (r *postResolver) Comments(ctx context.Context, obj *model.Post, limit *int, offset *int) ([]*model.Comment, error) {
+	return r.repo.HabrClone.PostsComments(obj)
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
 	return r.repo.HabrClone.User(id)
@@ -42,7 +52,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 // Posts is the resolver for the posts field.
-func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
+func (r *queryResolver) Posts(ctx context.Context, limit *int, offset *int) ([]*model.Post, error) {
 	return r.repo.HabrClone.Posts()
 }
 
@@ -52,7 +62,7 @@ func (r *queryResolver) Post(ctx context.Context, id string) (*model.Post, error
 }
 
 // Comments is the resolver for the comments field.
-func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
+func (r *queryResolver) Comments(ctx context.Context, limit *int, offset *int) ([]*model.Comment, error) {
 	return r.repo.HabrClone.Comments()
 }
 
@@ -66,8 +76,14 @@ func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) 
 	panic(fmt.Errorf("not implemented: CommentAdded - commentAdded"))
 }
 
+// Comment returns CommentResolver implementation.
+func (r *Resolver) Comment() CommentResolver { return &commentResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
+// Post returns PostResolver implementation.
+func (r *Resolver) Post() PostResolver { return &postResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
@@ -75,6 +91,8 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // Subscription returns SubscriptionResolver implementation.
 func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
 
+type commentResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
+type postResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type subscriptionResolver struct{ *Resolver }

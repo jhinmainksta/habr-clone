@@ -19,6 +19,7 @@ type HabrClone interface {
 	Posts() ([]*model.Post, error)
 	Comment(id string) (*model.Comment, error)
 	Comments() ([]*model.Comment, error)
+	PostsComments(obj *model.Post) ([]*model.Comment, error)
 }
 
 func NewRepository(db *gorm.DB) *Repository {

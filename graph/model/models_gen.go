@@ -3,11 +3,12 @@
 package model
 
 type Comment struct {
-	ID       string `json:"id"`
-	Content  string `json:"content"`
-	PostID   int    `json:"postID"`
-	UserID   int    `json:"userID"`
-	ParentID *int   `json:"parentID,omitempty"`
+	ID       string     `json:"id"`
+	Content  string     `json:"content"`
+	PostID   int        `json:"postID"`
+	UserID   int        `json:"userID"`
+	ParentID *int       `json:"parentID,omitempty"`
+	Comments []*Comment `json:"comments" gorm:"foreignKey:PostID"`
 }
 
 type Mutation struct {
@@ -33,11 +34,12 @@ type NewUser struct {
 }
 
 type Post struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	UserID  int    `json:"userID"`
-	Blocked *bool  `json:"blocked,omitempty"`
+	ID       string     `json:"id"`
+	Title    string     `json:"title"`
+	Content  string     `json:"content"`
+	UserID   int        `json:"userID"`
+	Blocked  *bool      `json:"blocked,omitempty"`
+	Comments []*Comment `json:"comments"`
 }
 
 type Query struct {

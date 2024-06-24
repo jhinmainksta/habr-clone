@@ -130,3 +130,11 @@ func (h *HabrClonePG) Comments() ([]*model.Comment, error) {
 
 	return Comments, err
 }
+
+func (h *HabrClonePG) PostsComments(obj *model.Post) ([]*model.Comment, error) {
+	var Comments []*model.Comment
+
+	err := h.db.Where("post_id = ?", obj.ID).Find(&Comments).Error
+
+	return Comments, err
+}
