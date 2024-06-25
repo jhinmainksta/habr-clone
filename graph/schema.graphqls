@@ -19,7 +19,7 @@ type Post {
   content: String!
   userID: Int!
   blocked: Boolean
-  comments(limit: Int = 10, offset: Int=0): [Comment!]!
+  comments(limit: Int, offset: Int): [Comment!]!
 }
 
 input NewPost {
@@ -35,7 +35,7 @@ type Comment {
   postID: Int!
   userID: Int!
   parentID: Int
-  comments(limit: Int = 10, offset: Int=0): [Comment!]!
+  comments(limit: Int, offset: Int): [Comment!]!
 }
 
 input NewComment {
@@ -48,9 +48,9 @@ input NewComment {
 type Query {
   user(id: ID!): User
   users: [User!]!
-  posts(limit: Int = 5, offset: Int=0): [Post!]!
+  posts(limit: Int, offset: Int): [Post!]!
   post(id: ID!): Post
-  comments(limit: Int = 5, offset: Int=0): [Comment!]!
+  comments(limit: Int, offset: Int): [Comment!]!
   comment(id: ID!): Comment
 }
 

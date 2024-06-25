@@ -40,7 +40,7 @@ func main() {
 	}
 
 	repo := repository.NewRepository(db)
-	resolver := graph.NewResolver(repo)
+	resolver := graph.NewResolver(repo, viper.GetInt("limit"), viper.GetInt("offset"))
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

@@ -95,10 +95,10 @@ func (h *HabrClonePG) Post(id string) (*model.Post, error) {
 	return post, err
 }
 
-func (h *HabrClonePG) Posts() ([]*model.Post, error) {
+func (h *HabrClonePG) Posts(limit int, offset int) ([]*model.Post, error) {
 	var posts []*model.Post
 
-	err := h.db.Find(&posts).Error
+	err := h.db.Limit(limit).Offset(offset).Find(&posts).Error
 
 	return posts, err
 }
@@ -123,18 +123,39 @@ func (h *HabrClonePG) Comment(id string) (*model.Comment, error) {
 	return Comment, err
 }
 
-func (h *HabrClonePG) Comments() ([]*model.Comment, error) {
+func (h *HabrClonePG) Comments(limit int, offset int) ([]*model.Comment, error) {
 	var Comments []*model.Comment
 
-	err := h.db.Find(&Comments).Error
+	err := h.db.Limit(limit).Offset(offset).Find(&Comments).Error
 
 	return Comments, err
 }
 
-func (h *HabrClonePG) PostsComments(obj *model.Post) ([]*model.Comment, error) {
+func (h *HabrClonePG) PostsComments(obj *model.Post, limit int, offset int) ([]*model.Comment, error) {
 	var Comments []*model.Comment
 
-	err := h.db.Where("post_id = ?", obj.ID).Find(&Comments).Error
+	err := h.db.Limit(limit).Offset(offset).Where("post_id = ?", obj.ID).Find(&Comments).Error
 
 	return Comments, err
+}
+
+func (h *HabrClonePG) CommentsComments(obj *model.Comment, limit int, offset int) ([]*model.Comment, error) {
+
+	var Comments []*model.Comment
+
+	err := h.db.Limit(limit).Offset(offset).Where("parent_id = ?", obj.ID).Find(&Comments).Error
+
+	return Comments, err
+}
+
+func (h *HabrClonePG) BlockComments(postID string) (*model.Post, error) {
+
+	post := &model.Post{ID: postID}
+	err := h.db.Model(post).Update("blocked", true).Error
+
+	if err == nil {
+		err = h.db.First(post).Error
+	}
+
+	return post, err
 }

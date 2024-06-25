@@ -7,9 +7,11 @@ import "github.com/jhinmainksta/habr-clone/repository"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	repo *repository.Repository
+	repo   *repository.Repository
+	limit  int
+	offset int
 }
 
-func NewResolver(repo *repository.Repository) *Resolver {
-	return &Resolver{repo: repo}
+func NewResolver(repo *repository.Repository, limit int, offset int) *Resolver {
+	return &Resolver{repo: repo, limit: limit, offset: offset}
 }
