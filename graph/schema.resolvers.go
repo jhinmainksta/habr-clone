@@ -9,10 +9,11 @@ import (
 	"fmt"
 
 	"github.com/jhinmainksta/habr-clone/graph/model"
+	"github.com/jhinmainksta/habr-clone/graph/my_model"
 )
 
 // Comments is the resolver for the comments field.
-func (r *commentResolver) Comments(ctx context.Context, obj *model.Comment, limit *int, offset *int) ([]*model.Comment, error) {
+func (r *commentResolver) Comments(ctx context.Context, obj *my_model.Comment, limit *int, offset *int) ([]*my_model.Comment, error) {
 	if limit == nil {
 		limit = &r.limit
 	}
@@ -35,7 +36,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 }
 
 // CreateComment is the resolver for the createComment field.
-func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*model.Comment, error) {
+func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*my_model.Comment, error) {
 	return r.repo.CreateComment(input)
 }
 
@@ -45,16 +46,17 @@ func (r *mutationResolver) BlockComments(ctx context.Context, postID string) (*m
 }
 
 // Comments is the resolver for the comments field.
-func (r *postResolver) Comments(ctx context.Context, obj *model.Post, limit *int, offset *int) ([]*model.Comment, error) {
-	if limit == nil {
-		limit = &r.limit
-	}
+func (r *postResolver) Comments(ctx context.Context, obj *model.Post, limit *int, offset *int) ([]*my_model.Comment, error) {
+	// if limit == nil {
+	// 	limit = &r.limit
+	// }
 
-	if offset == nil {
-		offset = &r.offset
-	}
+	// if offset == nil {
+	// 	offset = &r.offset
+	// }
 
-	return r.repo.PostsComments(obj, *limit, *offset)
+	// return r.repo.PostsComments(obj, *limit, *offset)
+	return getCommentLoader(ctx).Load(obj.ID)
 }
 
 // User is the resolver for the user field.
@@ -86,7 +88,7 @@ func (r *queryResolver) Post(ctx context.Context, id string) (*model.Post, error
 }
 
 // Comments is the resolver for the comments field.
-func (r *queryResolver) Comments(ctx context.Context, limit *int, offset *int) ([]*model.Comment, error) {
+func (r *queryResolver) Comments(ctx context.Context, limit *int, offset *int) ([]*my_model.Comment, error) {
 	if limit == nil {
 		limit = &r.limit
 	}
@@ -98,12 +100,12 @@ func (r *queryResolver) Comments(ctx context.Context, limit *int, offset *int) (
 }
 
 // Comment is the resolver for the comment field.
-func (r *queryResolver) Comment(ctx context.Context, id string) (*model.Comment, error) {
+func (r *queryResolver) Comment(ctx context.Context, id string) (*my_model.Comment, error) {
 	return r.repo.Comment(id)
 }
 
 // CommentAdded is the resolver for the commentAdded field.
-func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *model.Comment, error) {
+func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *my_model.Comment, error) {
 	panic(fmt.Errorf("not implemented: CommentAdded - commentAdded"))
 }
 

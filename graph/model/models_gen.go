@@ -2,14 +2,9 @@
 
 package model
 
-type Comment struct {
-	ID       string     `json:"id"`
-	Content  string     `json:"content"`
-	PostID   int        `json:"postID"`
-	UserID   int        `json:"userID"`
-	ParentID *int       `json:"parentID,omitempty"`
-	Comments []*Comment `json:"comments" gorm:"foreignKey:PostID"`
-}
+import (
+	"github.com/jhinmainksta/habr-clone/graph/my_model"
+)
 
 type Mutation struct {
 }
@@ -34,12 +29,12 @@ type NewUser struct {
 }
 
 type Post struct {
-	ID       string     `json:"id"`
-	Title    string     `json:"title"`
-	Content  string     `json:"content"`
-	UserID   int        `json:"userID"`
-	Blocked  *bool      `json:"blocked,omitempty"`
-	Comments []*Comment `json:"comments"`
+	ID       string              `json:"id"`
+	Title    string              `json:"title"`
+	Content  string              `json:"content"`
+	UserID   int                 `json:"userID"`
+	Blocked  *bool               `json:"blocked,omitempty"`
+	Comments []*my_model.Comment `json:"comments"`
 }
 
 type Query struct {

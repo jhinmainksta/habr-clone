@@ -1,7 +1,7 @@
 port: "8080"
 
-limit: 20
-offset: 5
+limit: 5
+offset: 0
 
 db:
   username: "postgres"

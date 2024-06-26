@@ -90,6 +90,8 @@ models:
       comments:
         resolver: true
   Comment:
+    model:
+      - github.com/jhinmainksta/habr-clone/graph/my_model.Comment
     fields:
       comments:
         resolver: true
