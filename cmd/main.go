@@ -6,8 +6,10 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/jhinmainksta/habr-clone/graph"
+	"github.com/jhinmainksta/habr-clone/graph/my_model"
 	"github.com/jhinmainksta/habr-clone/repository"
 	"github.com/jhinmainksta/habr-clone/repository/postgres"
 	"github.com/joho/godotenv"
@@ -40,11 +42,14 @@ func main() {
 		logrus.Fatalf("error initializing db: %s", err.Error())
 	}
 
+	subs := make(map[string]map[string]chan *my_model.Comment)
+
 	repo := repository.NewRepository(db)
-	resolver := graph.NewResolver(repo, viper.GetInt("limit"), viper.GetInt("offset"))
+	resolver := graph.NewResolver(repo, subs, viper.GetInt("limit"), viper.GetInt("offset"))
 
 	queryHandler := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver}))
 
+	queryHandler.AddTransport(&transport.Websocket{})
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", graph.DataloaderMiddleware(db, queryHandler))
 

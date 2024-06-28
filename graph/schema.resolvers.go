@@ -6,10 +6,11 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/jhinmainksta/habr-clone/graph/model"
 	"github.com/jhinmainksta/habr-clone/graph/my_model"
+	"github.com/markbates/going/randx"
 )
 
 // Comments is the resolver for the comments field.
@@ -37,7 +38,16 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*my_model.Comment, error) {
-	return r.repo.CreateComment(input)
+
+	Comment, err := r.repo.CreateComment(input)
+
+	r.mu.Lock()
+	for _, observer := range r.subs[strconv.Itoa(input.PostID)] {
+		observer <- Comment
+	}
+	r.mu.Unlock()
+
+	return Comment, err
 }
 
 // BlockComments is the resolver for the blockComments field.
@@ -106,7 +116,28 @@ func (r *queryResolver) Comment(ctx context.Context, id string) (*my_model.Comme
 
 // CommentAdded is the resolver for the commentAdded field.
 func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *my_model.Comment, error) {
-	panic(fmt.Errorf("not implemented: CommentAdded - commentAdded"))
+	id := randx.String(8)
+
+	commentEvents := make(chan *my_model.Comment, 1)
+
+	go func() {
+		<-ctx.Done()
+		r.mu.Lock()
+		delete(r.subs[postID], id)
+		if len(r.subs[postID]) == 0 {
+			delete(r.subs, postID)
+		}
+		r.mu.Unlock()
+	}()
+
+	r.mu.Lock()
+	if _, ok := r.subs[postID]; !ok {
+		r.subs[postID] = make(map[string]chan *my_model.Comment)
+	}
+	r.subs[postID][id] = commentEvents
+	r.mu.Unlock()
+	return commentEvents, nil
+
 }
 
 // Comment returns CommentResolver implementation.
