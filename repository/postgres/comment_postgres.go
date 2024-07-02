@@ -24,7 +24,6 @@ func (h *CommentPostgres) CreateComment(NewComment model.NewComment) (*my_model.
 	comment := &my_model.Comment{
 		Content:  NewComment.Content,
 		PostID:   NewComment.PostID,
-		UserID:   NewComment.UserID,
 		ParentID: NewComment.ParentID,
 	}
 

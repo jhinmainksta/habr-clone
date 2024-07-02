@@ -10,7 +10,6 @@ import (
 type Repository struct {
 	HCPost
 	HCComment
-	HCUser
 }
 
 type HCPost interface {
@@ -28,16 +27,9 @@ type HCComment interface {
 	CommentsComments(*my_model.Comment, int, int) ([]*my_model.Comment, error)
 }
 
-type HCUser interface {
-	CreateUser(model.NewUser) (*model.User, error)
-	User(string) (*model.User, error)
-	Users() ([]*model.User, error)
-}
-
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		HCPost:    postgres.NewPostPostgres(db),
-		HCUser:    postgres.NewUserPostgres(db),
 		HCComment: postgres.NewCommentPostgres(db),
 	}
 }

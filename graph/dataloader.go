@@ -10,7 +10,9 @@ import (
 	"gorm.io/gorm"
 )
 
-const commentLoaderKey = "userloader"
+type commentLoaderKey string
+
+const Key commentLoaderKey = "userloader"
 
 func DataloaderMiddleware(db *gorm.DB, next http.Handler) http.Handler {
 
@@ -47,12 +49,11 @@ func DataloaderMiddleware(db *gorm.DB, next http.Handler) http.Handler {
 			},
 		}
 
-		ctx := context.WithValue(r.Context(), commentLoaderKey, &commentLoader)
-
+		ctx := context.WithValue(r.Context(), Key, &commentLoader)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func getCommentLoader(ctx context.Context) *CommentLoader {
-	return ctx.Value(commentLoaderKey).(*CommentLoader)
+	return ctx.Value(Key).(*CommentLoader)
 }

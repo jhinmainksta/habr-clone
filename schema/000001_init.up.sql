@@ -19,15 +19,3 @@ CREATE TABLE comments (
             references posts(id)
             on delete cascade
 );
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL
-);  
-
-CREATE TABLE subscriptions (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    post_id INT NOT NULL
-);

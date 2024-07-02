@@ -26,11 +26,6 @@ func (r *commentResolver) Comments(ctx context.Context, obj *my_model.Comment, l
 	return r.repo.CommentsComments(obj, *limit, *offset)
 }
 
-// CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	return r.repo.CreateUser(input)
-}
-
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) (*model.Post, error) {
 	return r.repo.CreatePost(input)
@@ -38,7 +33,6 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.NewPost) 
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.NewComment) (*my_model.Comment, error) {
-
 	Comment, err := r.repo.CreateComment(input)
 
 	r.mu.Lock()
@@ -67,16 +61,6 @@ func (r *postResolver) Comments(ctx context.Context, obj *model.Post, limit *int
 
 	// return r.repo.PostsComments(obj, *limit, *offset)
 	return getCommentLoader(ctx).Load(obj.ID)
-}
-
-// User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	return r.repo.User(id)
-}
-
-// Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return r.repo.Users()
 }
 
 // Posts is the resolver for the posts field.
@@ -137,7 +121,6 @@ func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) 
 	r.subs[postID][id] = commentEvents
 	r.mu.Unlock()
 	return commentEvents, nil
-
 }
 
 // Comment returns CommentResolver implementation.

@@ -2,22 +2,10 @@
 #
 # https://gqlgen.com/getting-started/
 
-type User {
-  id: ID!
-  username: String!
-  password: String!
-}
-
-input NewUser{
-  username: String!
-  password: String!
-}
-
 type Post {
   id: ID!
   title: String!
   content: String!
-  userID: Int!
   blocked: Boolean
   comments(limit: Int, offset: Int): [Comment!]!
 }
@@ -25,7 +13,6 @@ type Post {
 input NewPost {
   title: String!
   content: String!
-  userID: Int!
   blocked: Boolean
 }
 
@@ -33,7 +20,6 @@ type Comment {
   id: ID!
   content: String!
   postID: Int!
-  userID: Int!
   parentID: Int
   comments(limit: Int, offset: Int): [Comment!]!
 }
@@ -41,13 +27,10 @@ type Comment {
 input NewComment {
   content: String!
   postID: Int!
-  userID: Int!
   parentID: Int
 }
 
 type Query {
-  user(id: ID!): User
-  users: [User!]!
   posts(limit: Int, offset: Int): [Post!]!
   post(id: ID!): Post
   comments(limit: Int, offset: Int): [Comment!]!
@@ -55,7 +38,6 @@ type Query {
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
   createPost(input: NewPost!): Post!
   createComment(input: NewComment!): Comment!
   blockComments(postId: ID!): Post!

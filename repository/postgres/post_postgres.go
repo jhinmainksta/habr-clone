@@ -19,7 +19,6 @@ func (h *PostPostgres) CreatePost(NewPost model.NewPost) (*model.Post, error) {
 	post := &model.Post{
 		Title:   NewPost.Title,
 		Content: NewPost.Content,
-		UserID:  NewPost.UserID,
 		Blocked: NewPost.Blocked,
 	}
 

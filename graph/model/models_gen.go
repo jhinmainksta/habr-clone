@@ -12,27 +12,19 @@ type Mutation struct {
 type NewComment struct {
 	Content  string `json:"content"`
 	PostID   int    `json:"postID"`
-	UserID   int    `json:"userID"`
 	ParentID *int   `json:"parentID,omitempty"`
 }
 
 type NewPost struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
-	UserID  int    `json:"userID"`
 	Blocked *bool  `json:"blocked,omitempty"`
-}
-
-type NewUser struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
 
 type Post struct {
 	ID       string              `json:"id"`
 	Title    string              `json:"title"`
 	Content  string              `json:"content"`
-	UserID   int                 `json:"userID"`
 	Blocked  *bool               `json:"blocked,omitempty"`
 	Comments []*my_model.Comment `json:"comments"`
 }
@@ -41,10 +33,4 @@ type Query struct {
 }
 
 type Subscription struct {
-}
-
-type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
 }
